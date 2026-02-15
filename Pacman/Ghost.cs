@@ -109,9 +109,14 @@ namespace PacmanGame
         //    If nextTile is on the right of ghostTile, the animation to play is "ghostRedRight".
         public void UpdateAnimatedSprite(Tile ghostTile, Tile nextTile)
         {
-            string[] directions = {"NorthWest", "Up"    , "NorthEast",
-                                   "Left"     , "Centre", "Right"    ,
-                                   "SouthWest", "Down"  , "SouthEast"};
+            // string[] directions = {"NorthWest", "Up"    , "NorthEast",
+            //                        "Left"     , "Centre", "Right"    ,
+            //                        "SouthWest", "Down"  , "SouthEast"};
+            // Tmp solution for weird bug that heppens when switching states
+            string[] directions = {"Up", "Up"    , "Right",
+                                   "Left"     , "Down", "Right"    ,
+                                   "Left", "Down"  , "Down"};
+
 
             if (ghostTile == null || nextTile == null)
             {

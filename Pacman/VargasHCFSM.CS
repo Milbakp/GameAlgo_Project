@@ -84,34 +84,30 @@ namespace PacmanGame
 
 		if (CurrentState == State.Roam)
             {
-                if (TransitionTriggered_RoamToChase())
-                {
-                    Chase_Initialize();
-                    CurrentState = State.Chase;
-                }
-                else
-                {
-                    Roam_Action();
-                }
+                // if (TransitionTriggered_RoamToChase())
+                // {
+                //     Chase_Initialize();
+                //     CurrentState = State.Chase;
+                // }
+                // else
+                // {
+                //     Roam_Action();
+                // }
+                Roam_Action();
             }
             else if (CurrentState == State.Chase)
             {
-                if (TransitionTriggered_ChaseToRoam())
-                {
-                    Roam_Initialize();
-                    CurrentState = State.Roam;
-                }
-                else
-                {
-                    Chase_Action();
-                }
+                // if (TransitionTriggered_ChaseToRoam())
+                // {
+                //     Roam_Initialize();
+                //     CurrentState = State.Roam;
+                // }
+                // else
+                // {
+                //     Chase_Action();
+                // }
+                Chase_Action();
             }
-            // else if (CurrentState == State.Scanning)
-            // {
-            //     // Do nothing for now
-            //     facingDirection(Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight), Tile.ToTile(_pacman.Position, _tiledMap.TileWidth, _tiledMap.TileHeight));
-            // }
-		
         }
 
         /// ROAM STATE /// <summary>
@@ -246,7 +242,6 @@ namespace PacmanGame
                     }
                 }
             }
-            //facingDirection(_srcTile, _path.First.Value);
             // Move the ghost to the new tile location
             _ghost.Position = _ghost.Move(_ghost.Position, _nextTilePosition, elapsedSeconds);
             _ghost.AnimatedSprite.Update(ScalableGameTime.GameTime);
@@ -372,9 +367,11 @@ namespace PacmanGame
                     var gid = tile.Value.GlobalIdentifier;
                     //Debug.WriteLine($"There is a tile at ({nextTile.Col}, {nextTile.Row}) with GID: {gid}");
                 }
-                if (nextTile.Equals(pacmanTile))
+                if (nextTile.Equals(pacmanTile) && CurrentState == State.Roam)
                 {
                     Debug.WriteLine("Pacman is in vision range.");
+                    Chase_Initialize();
+                    CurrentState = State.Chase;
                     break;
                 }
                 nextTile = new Tile(nextTile.Col + directionNum[0], nextTile.Row + directionNum[1]);
