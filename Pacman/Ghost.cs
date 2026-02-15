@@ -37,8 +37,15 @@ namespace PacmanGame
             // FSM = new GhostHCFSM(_game, this, gameMap.TiledMap, gameMap.TileGraph, pacman);
 
             //FSM = new NavigationHCFSM(this, NavigationHCFSM.NavigationState.STOP);
-            
-            FSM = new CollectPowerPelletHCFSM(this, CollectPowerPelletHCFSM.NavigationState.STOP);
+            // Assingment 2
+            //FSM = new CollectPowerPelletHCFSM(this, CollectPowerPelletHCFSM.NavigationState.STOP);
+
+            // Project
+            GameMap gameMap = (GameMap)GameObjectCollection.FindByName("GameMap");
+            Tile startTile = new Tile(gameMap.StartColumn, gameMap.StartRow);
+            Position = Tile.ToPosition(startTile, gameMap.TiledMap.TileWidth, gameMap.TiledMap.TileHeight);
+            Pacman pacman = (Pacman)GameObjectCollection.FindByName("Pacman");
+            FSM = new VargasHCFSM(_game, this, gameMap.TiledMap, gameMap.TileGraph, pacman);
             FSM.Initialize();
         }
 
@@ -127,6 +134,8 @@ namespace PacmanGame
                 Tile difference = new Tile(nextTile.Col - ghostTile.Col, nextTile.Row - ghostTile.Row);
                 int index = (difference.Col + 1) + 3 * (difference.Row + 1);
 
+                //Console.WriteLine($"Direction: {directions[index]}");
+                //Debug.WriteLine($"Col: {nextTile.Col}, Row: {nextTile.Row}");
                 string animationName = $"ghostRed{directions[index]}";
 
                 if (AnimatedSprite.CurrentAnimation != animationName)
