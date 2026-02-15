@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/PacmanMap2.tmx</SourceFile>
+  <SourceTime>2026-01-31T15:56:56.8776972+08:00</SourceTime>
+  <DestFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/PacmanMap2.xnb</DestFile>
+  <DestTime>2026-02-15T16:03:13.6511127+08:00</DestTime>
+  <Importer>TiledMapImporter</Importer>
+  <ImporterTime>2025-11-29T16:05:08+08:00</ImporterTime>
+  <Processor>TiledMapProcessor</Processor>
+  <ProcessorTime>2025-11-29T16:05:08+08:00</ProcessorTime>
+  <Dependencies>
+    <string>c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\Content\pacman-wall-24.tsx</string>
+  </Dependencies>
+  <BuildAsset>
+    <string>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/pacman-wall-24.xnb</string>
+  </BuildAsset>
+  <BuildOutput />
+</PipelineBuildEvent>
