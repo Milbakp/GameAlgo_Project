@@ -10,7 +10,7 @@ namespace PacmanGame
 {
     public class VargasHCFSM : HCFSM
     {
-        public enum State { Roam, Chase, Evade, Scanning };
+        public enum State { Roam, Chase, Evade, Scanning};
 
         public State CurrentState;
         private GameEngine _game;

@@ -1,3 +1,4 @@
+// Based from the original Pacman.cs
 using GAlgoT2530.Engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -5,6 +6,7 @@ using MonoGame.Extended.Content;
 using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Tiled;
 using System;
+using System.Diagnostics;
 
 
 namespace PacmanGame
@@ -70,18 +72,6 @@ namespace PacmanGame
             // Calculate a new next tile and position when Pacman reach its old next tile
             if (Position.Equals(_nextTilePosition))
             {
-                /********************************************************************************
-                    PROBLEM 2 : Calculate the current tile.
-
-
-                    HOWTOSOLVE : 1. Copy the code below.
-                                 2. Paste it below this block comment.
-                                 3. Fill in the blanks.
-
-                    // Update current tile
-                    _currTile = ________;
-
-                ********************************************************************************/
                 _currTile = Tile.ToTile(Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
                 
 
@@ -91,37 +81,17 @@ namespace PacmanGame
                 // To calculate the next tile, first assume that Pacman does not move.
                 Tile nextTile = _currTile;
 
-                // Pacman always move in the current direction whenever possible.
-                //   Otherwise, fall back to the previous direction.
-                Direction[] directions = { _currDirection, _prevDirection };
+                nextTile = GetNextTileFromDirection(_currDirection);
+                ushort col = (ushort)nextTile.Col;
+                ushort row = (ushort)nextTile.Row;
 
-                foreach (Direction direction in directions)
+                if (_tiledMapNavigableLayer.TryGetTile(col, row, out TiledMapTile? nextTiledMapTile))
                 {
-                    nextTile = GetNextTileFromDirection(direction);
-                    ushort col = (ushort)nextTile.Col;
-                    ushort row = (ushort)nextTile.Row;
-
-                    if (_tiledMapNavigableLayer.TryGetTile(col, row, out TiledMapTile? nextTiledMapTile))
-                    {
-                        // NOT BLANK: Paman found the next tile to move to
-                        if (!nextTiledMapTile.Value.IsBlank)
+                        // BLANK: Pacman/Player found the next tile non-navigable
+                        if (nextTiledMapTile.Value.IsBlank)
                         {
-                            if (direction == _currDirection)
-                            {
-                                // Pacman can move in the current direction,
-                                //   so previous direction not relevant anymore
-                                _prevDirection = Direction.None;
-                            }
-                            break;
-                        }
-                        // BLANK: Pacman found the next tile non-navigable
-                        else
-                        {
-                            // Pacman cannot move,
-                            //   so should stay where it is
                             nextTile = _currTile;
                         }
-                    }
                 }
 
                 // Update animation
@@ -176,44 +146,22 @@ namespace PacmanGame
                 return Direction.None;
             }
         }
-
+        // Altered since in this game, the player should be able to change direction immediately and stop moving in the middle of the road.
         private void UpdateDirection(Direction newDirection)
         {
             // "newDirection = Direction.None" means no use input is entered
             if (newDirection != Direction.None)
             {
-                if (_currDirection == Direction.None)
-                {
-                    _currDirection = newDirection;
-                }
-                else if (_prevDirection == Direction.None && newDirection != _currDirection)
-                {
-                    _prevDirection = _currDirection;
-                    _currDirection = newDirection;
-                }
+                _currDirection = newDirection;
             }
         }
 
         private Tile GetNextTileFromDirection(Direction direction)
         {
             int directionIndex = (int)direction;
-            /********************************************************************************
-                PROBLEM 2 : Determine the next tile from the given direction.
 
-
-                HOWTOSOLVE : 1. Copy the code below.
-                             2. Paste it below this block comment.
-                             3. Fill in the blanks.
-
-                Tile nextTile = new Tile(________.Col + ________[directionIndex]
-                                        ,________.Row + ________[directionIndex]);
-            ********************************************************************************/
             Tile nextTile = new Tile(_currTile.Col + NextCol[directionIndex],
                                         _currTile.Row + NextRow[directionIndex]);
-            
-			
-			
-
 
             return nextTile;
         }
