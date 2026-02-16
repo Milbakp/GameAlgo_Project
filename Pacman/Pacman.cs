@@ -6,6 +6,7 @@ using MonoGame.Extended.Content;
 using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Tiled;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 
@@ -30,13 +31,15 @@ namespace PacmanGame
         private readonly int[] NextCol = { -1, 0, 1, -1, 0, 1, -1, 0, 1 };
 
         private Direction _currDirection;
-        private Direction _prevDirection;
+        private Direction _prevDirection; // not in use anymore
 
         private Tile _currTile;
         private Vector2 _nextTilePosition;
 
         private TiledMap _tiledMap;
         private TiledMapTileLayer _tiledMapNavigableLayer;
+        // New Project variables
+        public Dictionary<(int x, int y), float> HeatMap = new Dictionary<(int x, int y), float>();
 
         public Pacman() : base("Pacman", "pacman-animations.sf")
         {
@@ -61,6 +64,17 @@ namespace PacmanGame
             _currTile = new Tile(StartColumn, StartRow);
             Position = Tile.ToPosition(_currTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
             _nextTilePosition = Position;
+
+            foreach (TiledMapTile? tile in _tiledMapNavigableLayer.Tiles)
+            {
+                if (tile.HasValue)
+                {
+                    if (!tile.Value.IsBlank)
+                    {
+                        HeatMap.Add((tile.Value.X, tile.Value.Y), 0);
+                    }
+                }
+            }
         }
 
         public override void Update()
@@ -73,7 +87,6 @@ namespace PacmanGame
             if (Position.Equals(_nextTilePosition))
             {
                 _currTile = Tile.ToTile(Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
-                
 
                 // Call the reach tile callback
                 TileReached?.Invoke(_currTile);
@@ -101,6 +114,8 @@ namespace PacmanGame
                 if (!nextTile.Equals(_currTile))
                 {
                     _nextTilePosition = Tile.ToPosition(nextTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
+                    HeatMap[(nextTile.Col, nextTile.Row)] += 1;
+                    Debug.WriteLine($"HeatMap value: {HeatMap[(nextTile.Col, nextTile.Row)]}");
                 }
                 else
                 {
@@ -108,6 +123,7 @@ namespace PacmanGame
                     _currDirection = Direction.None;
                     _prevDirection = Direction.None;
                 }
+                
             }
 
             // Move and animate pacman towards the next tile's position

@@ -23,8 +23,8 @@ namespace PacmanGame
 
             Pacman pacman = new Pacman();
             pacman.Speed = 100.0f;
-            pacman.StartRow = 28;
-            pacman.StartColumn = 0;
+            pacman.StartRow = 2;
+            pacman.StartColumn = 1;
             pacman.NavigableTileLayerName = "Food";
         }
         // Updating the map, replaces the power pellet tile with tthe empty tile.

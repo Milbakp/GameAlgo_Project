@@ -5,12 +5,13 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tiled;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Input;
 
 namespace PacmanGame
 {
     public class VargasHCFSM : HCFSM
     {
-        public enum State { Roam, Chase, Evade, Scanning};
+        public enum State { Roam, Chase, HeatMap, Scanning};
 
         public State CurrentState;
         private GameEngine _game;
@@ -26,7 +27,7 @@ namespace PacmanGame
         private Vector2 _destTilePosition;
 
         // For Chase State only
-        private GameObject _pacman;
+        private Pacman _pacman;
         private Tile _nextTile;
         private Vector2 _nextTilePosition;
 		
@@ -107,6 +108,17 @@ namespace PacmanGame
                 //     Chase_Action();
                 // }
                 Chase_Action();
+            }
+            else if(CurrentState == State.HeatMap)
+            {
+                HeatMap_Action();
+            }
+
+            KeyboardState keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.H))
+            {
+                CurrentState = State.HeatMap;
+                HeatMap_Initialize();
             }
         }
 
@@ -330,6 +342,69 @@ namespace PacmanGame
             return false;
 			
         }
+        //// CHASE STATE ////
+        #region HeatMap State Methods
+        private void HeatMap_Initialize()
+        {
+            _ghost.MaxSpeed = 100.0f;
+
+            // Initialize the next tile position
+            _nextTilePosition = _ghost.Position;
+            _nextTile = Tile.ToTile(_nextTilePosition, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            _path.Clear();
+            KeyValuePair<(int x, int y), float> maxEntry = default;
+            bool first = true;
+
+            foreach (var entry in _pacman.HeatMap)
+            {
+                if (first || entry.Value > maxEntry.Value)
+                {
+                    maxEntry = entry;
+                    first = false;
+                }
+            }
+            _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            _destTile = new Tile(maxEntry.Key.x, maxEntry.Key.y);
+            _path = AStar.Compute(_tileGraph, _srcTile, _destTile, AStarHeuristic.EuclideanSquared);
+            _path.RemoveFirst();
+
+            if (!_srcTile.Equals(_destTile))
+                {
+                    // Calculate next tile for the purpose of playing the correct animation.
+                    _nextTile = _path.First.Value;
+                    _nextTilePosition = Tile.ToPosition(_nextTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
+
+                    // Ensure animated starts at the correct direction.
+                    _ghost.UpdateAnimatedSprite(_srcTile, _nextTile);
+                }
+        }
+        private void HeatMap_Action()
+        {
+            float elapsedSeconds = ScalableGameTime.DeltaTime;
+            // Reach the next tile
+            if (_ghost.Position.Equals(_nextTilePosition) && _path.Count > 0)
+            {
+                    // Get the next tile and update animation
+                    _srcTile = _nextTile;
+                    _path.RemoveFirst();
+                    if (!_srcTile.Equals(_destTile))
+                    {
+                        _nextTile = _path.First.Value;
+                        _nextTilePosition = Tile.ToPosition(_nextTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
+                        _ghost.UpdateAnimatedSprite(_srcTile, _nextTile);
+                        facingDirection(_srcTile, _nextTile);
+                    }
+            }
+            if (_srcTile.Equals(_destTile))
+            {
+                Roam_Initialize();
+                CurrentState = State.Roam;
+            }
+            // Move the ghost to the new tile location
+            _ghost.Position = _ghost.Move(_ghost.Position, _nextTilePosition, elapsedSeconds);
+            _ghost.AnimatedSprite.Update(ScalableGameTime.GameTime);
+        }
+        #endregion
         // Luqman: Code
         // Determine's Vargas's facing direction and scans all tiles in that direction until a wall is hit, 
         // to check if Pacman is in vision range.
@@ -364,10 +439,10 @@ namespace PacmanGame
                         break;
                     }
                     // There is a tile here
-                    var gid = tile.Value.GlobalIdentifier;
+                    // var gid = tile.Value.GlobalIdentifier;
                     //Debug.WriteLine($"There is a tile at ({nextTile.Col}, {nextTile.Row}) with GID: {gid}");
                 }
-                if (nextTile.Equals(pacmanTile) && CurrentState == State.Roam)
+                if (nextTile.Equals(pacmanTile) && (CurrentState == State.Roam || CurrentState == State.HeatMap))
                 {
                     Debug.WriteLine("Pacman is in vision range.");
                     Chase_Initialize();
