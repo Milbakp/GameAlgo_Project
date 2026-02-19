@@ -17,7 +17,6 @@ namespace PacmanGame
             // gameMap.StartColumn = 0;
             // gameMap.StartRow = 8;
             _gameMap = gameMap;
-            _goalTile = _gameMap.goalTile;
 
             // Pathfinding Tester
             // PathfindingTester pathfindingTester = new PathfindingTester("PathfindingTester");
@@ -41,7 +40,11 @@ namespace PacmanGame
         public override void Update()
         {
             _gameMap.Update();
-            if (_pacman._currTile.Equals(_goalTile))
+            if (_pacman._currTile.Equals(_gameMap.goalTile))
+            {
+                RestartScene();
+            }
+            if (_pacman._currTile.Equals(Tile.ToTile(_ghost.Position, _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight)))
             {
                 RestartScene();
             }

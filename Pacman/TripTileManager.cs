@@ -11,9 +11,10 @@ namespace PacmanGame{
     {
         private GameMap _gameMap;
         private TiledMapTileLayer _foodLayer;
+        public LinkedList<Tile> _tripTiles = new LinkedList<Tile>();
+        public Dictionary<Tile, bool> blockedTiles = new Dictionary<Tile, bool>(); 
         private Pacman _pacman;
         private VargasHCFSM _vargasHCFSM;
-        private LinkedList<Tile> _tripTiles = new LinkedList<Tile>();
         public bool alert;
         private Tile _alertedTile;
 
@@ -33,7 +34,7 @@ namespace PacmanGame{
             // }
             // Debug.WriteLine("VargasHCFSM is not null in Trip TileManager");
             // dummy trip tiles for testing
-            _tripTiles.AddLast(new Tile(22, 15));
+            //_tripTiles.AddLast(new Tile(22, 15));
             alert = false;
         }
 
@@ -55,6 +56,24 @@ namespace PacmanGame{
         public Tile GetAlertedTile()
         {
             return _alertedTile;
+        }
+        // Work around to make sure that the game map is not null when assigned. The function is called by VargasHCFSM in its initialization.
+        public void setMap()
+        {
+            if(_tripTiles.Count > 0)
+            {
+                return;
+            }
+            _gameMap = (GameMap)GameObjectCollection.FindByName("GameMap");
+            _foodLayer = _gameMap.TiledMap.GetLayer<TiledMapTileLayer>("Food");
+            TiledMapObjectLayer tiledMapObjectLayer = _gameMap.TiledMap.GetLayer<TiledMapObjectLayer>("TripTiles");
+            foreach (var obj in tiledMapObjectLayer.Objects)
+            {
+                Tile tripTile = Tile.ToTile(new Vector2(obj.Position.X, obj.Position.Y), _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight);
+                _tripTiles.AddLast(tripTile);
+                _foodLayer.SetTile((ushort)tripTile.Col, (ushort)tripTile.Row, 4);
+                blockedTiles.Add(tripTile, false);
+            }
         }
     }
 }

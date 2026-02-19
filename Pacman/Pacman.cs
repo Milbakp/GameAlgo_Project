@@ -40,6 +40,7 @@ namespace PacmanGame
         private TiledMapTileLayer _tiledMapNavigableLayer;
         // New Project variables
         public Dictionary<(int x, int y), float> HeatMap = new Dictionary<(int x, int y), float>();
+        private TripTileManager _tripTileManager;
 
         public Pacman() : base("Pacman", "pacman-animations.sf")
         {
@@ -65,18 +66,21 @@ namespace PacmanGame
             Position = Tile.ToPosition(_currTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
             _nextTilePosition = Position;
 
-            HeatMap = new Dictionary<(int x, int y), float>();
-
-            foreach (TiledMapTile? tile in _tiledMapNavigableLayer.Tiles)
+            // Fills the heatmap with all the navigable tiles in the map only on the first run.
+            if(HeatMap.Count == 0)
             {
-                if (tile.HasValue)
+               foreach (TiledMapTile? tile in _tiledMapNavigableLayer.Tiles)
                 {
-                    if (!tile.Value.IsBlank)
+                    if (tile.HasValue)
                     {
-                        HeatMap.Add((tile.Value.X, tile.Value.Y), 0);
+                        if (!tile.Value.IsBlank)
+                        {
+                            HeatMap.Add((tile.Value.X, tile.Value.Y), 0);
+                        }
                     }
-                }
+                } 
             }
+            _tripTileManager = (TripTileManager)GameObjectCollection.FindByName("TripTileManager");
         }
 
         public override void Update()
@@ -100,7 +104,8 @@ namespace PacmanGame
                 ushort col = (ushort)nextTile.Col;
                 ushort row = (ushort)nextTile.Row;
 
-                if (_tiledMapNavigableLayer.TryGetTile(col, row, out TiledMapTile? nextTiledMapTile))
+                if (_tiledMapNavigableLayer.TryGetTile(col, row, out TiledMapTile? nextTiledMapTile)|| 
+                    (_tripTileManager.blockedTiles.ContainsKey(nextTile) && _tripTileManager.blockedTiles[nextTile]))
                 {
                         // BLANK: Pacman/Player found the next tile non-navigable
                         if (nextTiledMapTile.Value.IsBlank)
@@ -116,8 +121,11 @@ namespace PacmanGame
                 if (!nextTile.Equals(_currTile))
                 {
                     _nextTilePosition = Tile.ToPosition(nextTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
-                    HeatMap[(nextTile.Col, nextTile.Row)] += 1;
-                    Debug.WriteLine($"HeatMap value: {HeatMap[(nextTile.Col, nextTile.Row)]}");
+                    if(HeatMap != null && HeatMap.ContainsKey((nextTile.Col, nextTile.Row)))
+                    {
+                        HeatMap[(nextTile.Col, nextTile.Row)] += 1;
+                        Debug.WriteLine($"HeatMap value: {HeatMap[(nextTile.Col, nextTile.Row)]}");
+                    }
                 }
                 else
                 {

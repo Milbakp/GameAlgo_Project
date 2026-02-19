@@ -43,6 +43,7 @@ namespace PacmanGame
         public string direction;
         public TripTileManager _tripTileManager;
         private Tile _goalTile;
+        private bool inVision;
 
         // Lab 11 (Problem 3): New Constructor
         public VargasHCFSM(GameEngine game, Ghost ghost, TiledMap map, TileGraph graph, Pacman pacman)
@@ -69,6 +70,7 @@ namespace PacmanGame
         public override void Initialize()
         {
             CurrentState = State.Roam;
+            inVision = false;
 
             // Comment out this line to test the Chase state below.
             // Roam_Initialize();
@@ -78,7 +80,7 @@ namespace PacmanGame
 
             // Lab 11 (Problem 4) only
             RoamMaxSeconds = 3f;
-            ChaseMaxSeconds = 5f;
+            ChaseMaxSeconds = 3f;
             _roamRemainingSeconds = 0f;
             _chaseRemainingSeconds = 0f;
 
@@ -97,8 +99,10 @@ namespace PacmanGame
                 }
             }
             _ghost.Position = Tile.ToPosition(_goalTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
-			
+            _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
+			_destTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
             Roam_Initialize();
+            _tripTileManager.setMap();
         }
 
         // Lab 11 (Problem 3): New Update()
@@ -125,16 +129,16 @@ namespace PacmanGame
             }
             else if (CurrentState == State.Chase)
             {
-                // if (TransitionTriggered_ChaseToRoam())
-                // {
-                //     Roam_Initialize();
-                //     CurrentState = State.Roam;
-                // }
-                // else
-                // {
-                //     Chase_Action();
-                // }
-                Chase_Action();
+                if (TransitionTriggered_ChaseToRoam())
+                {
+                    Roam_Initialize();
+                    CurrentState = State.Roam;
+                }
+                else
+                {
+                    Chase_Action();
+                }
+                //Chase_Action();
             }
             else if(CurrentState == State.HeatMap)
             {
@@ -151,12 +155,14 @@ namespace PacmanGame
                 CurrentState = State.HeatMap;
                 HeatMap_Initialize();
             }
-            if(_tripTileManager.alert == true)
+            if(_tripTileManager.alert == true && CurrentState != State.Chase)
             {
                 _tripTileManager.alert = false;
                 CurrentState = State.Alert;
                 Alert_Initialize();
             }
+            // Tile nearestTripTile = Calculate_NearestTripTile();
+            // _tripTileManager.blockedTiles[nearestTripTile] = true;
         }
 
         /// ROAM STATE /// <summary>
@@ -291,6 +297,9 @@ namespace PacmanGame
                     }
                 }
             }
+            Tile nearestTripTile = Calculate_NearestTripTile();
+            _tripTileManager.blockedTiles[nearestTripTile] = true;
+
             // Move the ghost to the new tile location
             _ghost.Position = _ghost.Move(_ghost.Position, _nextTilePosition, elapsedSeconds);
             _ghost.AnimatedSprite.Update(ScalableGameTime.GameTime);
@@ -350,6 +359,23 @@ namespace PacmanGame
                 }
             
         }
+        // Calculate the nearest trip tile and block it off. Luqman
+        private Tile Calculate_NearestTripTile()
+        {
+            //_srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            LinkedList<Tile> nearestTripTilePath = new LinkedList<Tile>();
+            int currentNearest = _tiledMap.Width * _tiledMap.Height;
+            foreach(Tile tile in _tripTileManager._tripTiles)
+            {
+                LinkedList<Tile> tmpPath = AStar.Compute(_tileGraph, _pacman._currTile, tile, AStarHeuristic.EuclideanSquared);
+                if(tmpPath.Count < currentNearest)
+                {
+                    currentNearest = tmpPath.Count;
+                    nearestTripTilePath = tmpPath;
+                }
+            }
+            return nearestTripTilePath.Last.Value;
+        }
         #endregion
 
         //// TRANSITIONS ////
@@ -370,9 +396,13 @@ namespace PacmanGame
 
         private bool TransitionTriggered_ChaseToRoam()
         {
+            if (inVision)
+            {
+                _chaseRemainingSeconds = ChaseMaxSeconds;
+            }
             if (_chaseRemainingSeconds <= 0)
             {
-                _chaseRemainingSeconds = 5;
+                _chaseRemainingSeconds = ChaseMaxSeconds;
                 return true;
             }
 
@@ -521,6 +551,7 @@ namespace PacmanGame
             TiledMapTileLayer foodLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Food");
             TiledMapTile? tile;
             Tile pacmanTile = Tile.ToTile(_pacman.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            inVision = false;
             while(true)
             {
                 if (foodLayer.TryGetTile((ushort)nextTile.Col, (ushort)nextTile.Row, out tile)) 
@@ -531,9 +562,10 @@ namespace PacmanGame
                         //Debug.WriteLine($"No tile at ({nextTile.Col}, {nextTile.Row}). Stopping vision in this direction.");
                         break;
                     }
-                    // There is a tile here
-                    // var gid = tile.Value.GlobalIdentifier;
-                    //Debug.WriteLine($"There is a tile at ({nextTile.Col}, {nextTile.Row}) with GID: {gid}");
+                }
+                if (nextTile.Equals(pacmanTile))
+                {
+                    inVision = true;
                 }
                 if (nextTile.Equals(pacmanTile) && !(CurrentState == State.Chase))
                 {

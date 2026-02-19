@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/VargasSimpleMap.tmx</SourceFile>
-  <SourceTime>2026-02-19T12:30:59.6304823+08:00</SourceTime>
+  <SourceTime>2026-02-19T14:16:40.3337941+08:00</SourceTime>
   <DestFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/VargasSimpleMap.xnb</DestFile>
-  <DestTime>2026-02-19T12:31:18.4022057+08:00</DestTime>
+  <DestTime>2026-02-19T14:17:10.9167535+08:00</DestTime>
   <Importer>TiledMapImporter</Importer>
   <ImporterTime>2025-11-29T16:05:08+08:00</ImporterTime>
   <Processor>TiledMapProcessor</Processor>
   <ProcessorTime>2025-11-29T16:05:08+08:00</ProcessorTime>
   <Dependencies>
-    <string>c:\Users\luqma\Desktop\GameAlgo\Lab\Lab08Project\Pacman\Content\pacman-wall-24.tsx</string>
+    <string>c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\Content\pacman-wall-24.tsx</string>
   </Dependencies>
   <BuildAsset>
-    <string>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/../../../../Lab/Lab08Project/Pacman/Content/pacman-wall-24_0.xnb</string>
+    <string>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/pacman-wall-24.xnb</string>
   </BuildAsset>
   <BuildOutput />
 </PipelineBuildEvent>

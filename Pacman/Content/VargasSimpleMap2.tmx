@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="24" tileheight="24" infinite="0" nextlayerid="5" nextobjectid="13">
- <tileset firstgid="1" source="pacman-wall-24.tsx"/>
+ <tileset firstgid="1" source="../../../../Lab/Lab08Project/Pacman/Content/pacman-wall-24.tsx"/>
  <layer id="1" name="Wall" width="50" height="30">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
@@ -74,38 +74,6 @@
    <point/>
   </object>
   <object id="2" name="Goal" x="1189.68" y="85.7268">
-   <point/>
-  </object>
- </objectgroup>
- <objectgroup id="4" name="TripTiles">
-  <object id="3" x="158.332" y="106.721">
-   <point/>
-  </object>
-  <object id="4" x="562.473" y="111.97">
-   <point/>
-  </object>
-  <object id="5" x="970.112" y="110.22">
-   <point/>
-  </object>
-  <object id="6" x="1140.69" y="370.9">
-   <point/>
-  </object>
-  <object id="7" x="970.987" y="635.953">
-   <point/>
-  </object>
-  <object id="8" x="562.473" y="633.328">
-   <point/>
-  </object>
-  <object id="9" x="155.708" y="638.577">
-   <point/>
-  </object>
-  <object id="10" x="540.604" y="370.9">
-   <point/>
-  </object>
-  <object id="11" x="587.841" y="374.399">
-   <point/>
-  </object>
-  <object id="12" x="945.619" y="370.9">
    <point/>
   </object>
  </objectgroup>
