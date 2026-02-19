@@ -82,3 +82,8 @@
 /processorParam:TextureFormat=Color
 /build:path.png
 
+#begin VargasSimpleMap.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:VargasSimpleMap.tmx
+

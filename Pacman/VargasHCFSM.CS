@@ -11,7 +11,7 @@ namespace PacmanGame
 {
     public class VargasHCFSM : HCFSM
     {
-        public enum State { Roam, Chase, HeatMap, Scanning};
+        public enum State { Roam, Chase, HeatMap, Alert, Scanning};
 
         public State CurrentState;
         private GameEngine _game;
@@ -41,6 +41,8 @@ namespace PacmanGame
         // public enum Direction {Up,Down,Left,Right,};
         // public Direction direction;
         public string direction;
+        public TripTileManager _tripTileManager;
+        private Tile _goalTile;
 
         // Lab 11 (Problem 3): New Constructor
         public VargasHCFSM(GameEngine game, Ghost ghost, TiledMap map, TileGraph graph, Pacman pacman)
@@ -52,6 +54,15 @@ namespace PacmanGame
             _tiledMap = map;
             _tileGraph = graph;
             _pacman = pacman;
+            _tripTileManager = (TripTileManager)GameObjectCollection.FindByName("TripTileManager");
+            // if (_tripTileManager == null)
+            // {
+            //     Debug.WriteLine("Error: TripTileManager not found in GameObjectCollection!");
+            // }
+            // else
+            // {
+            //     Debug.WriteLine("TripTileManager found in GameObjectCollection!");
+            // }
         }
 
         // Lab 11 (Problem 3): New Initialize()
@@ -70,6 +81,22 @@ namespace PacmanGame
             ChaseMaxSeconds = 5f;
             _roamRemainingSeconds = 0f;
             _chaseRemainingSeconds = 0f;
+
+            TiledMapObjectLayer wayPoints = _tiledMap.GetLayer<TiledMapObjectLayer>("WayPoints");
+
+            // filling _powerPelletTilesOrder with all paths to each power pellet.
+            foreach (var obj in wayPoints.Objects)
+            {
+                if(obj.Name == "Home")
+                {
+                    continue;
+                }else if(obj.Name == "Goal")
+                {
+                    _goalTile = Tile.ToTile(new Vector2(obj.Position.X, obj.Position.Y), _tiledMap.TileWidth, _tiledMap.TileHeight);
+                    continue;
+                }
+            }
+            _ghost.Position = Tile.ToPosition(_goalTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
 			
             Roam_Initialize();
         }
@@ -113,12 +140,22 @@ namespace PacmanGame
             {
                 HeatMap_Action();
             }
+            else if(CurrentState == State.Alert)
+            {
+                Alert_Action();
+            }
 
             KeyboardState keyboardState = Keyboard.GetState();
             if (keyboardState.IsKeyDown(Keys.H))
             {
                 CurrentState = State.HeatMap;
                 HeatMap_Initialize();
+            }
+            if(_tripTileManager.alert == true)
+            {
+                _tripTileManager.alert = false;
+                CurrentState = State.Alert;
+                Alert_Initialize();
             }
         }
 
@@ -128,7 +165,7 @@ namespace PacmanGame
         private void Roam_Initialize()
         {
             // Set the ghost Speed
-            _ghost.MaxSpeed = 80.0f;
+            _ghost.MaxSpeed = 100.0f;
 
             // Initialize source tile from owner's current position
             _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
@@ -342,11 +379,11 @@ namespace PacmanGame
             return false;
 			
         }
-        //// CHASE STATE ////
+        //// HeatMap STATE ////
         #region HeatMap State Methods
         private void HeatMap_Initialize()
         {
-            _ghost.MaxSpeed = 100.0f;
+            _ghost.MaxSpeed = 120.0f;
 
             // Initialize the next tile position
             _nextTilePosition = _ghost.Position;
@@ -405,6 +442,62 @@ namespace PacmanGame
             _ghost.AnimatedSprite.Update(ScalableGameTime.GameTime);
         }
         #endregion
+
+        //// Alert STATE ////
+        #region Alert State Methods
+        private void Alert_Initialize()
+        {
+            _ghost.MaxSpeed = 150.0f;
+
+            // Initialize the next tile position
+            _nextTilePosition = _ghost.Position;
+            _nextTile = Tile.ToTile(_nextTilePosition, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            _path.Clear();
+
+            _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            _destTile = _tripTileManager.GetAlertedTile();
+            _path = AStar.Compute(_tileGraph, _srcTile, _destTile, AStarHeuristic.EuclideanSquared);
+            _path.RemoveFirst();
+
+            if (!_srcTile.Equals(_destTile))
+                {
+                    // Calculate next tile for the purpose of playing the correct animation.
+                    _nextTile = _path.First.Value;
+                    _nextTilePosition = Tile.ToPosition(_nextTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
+
+                    // Ensure animated starts at the correct direction.
+                    _ghost.UpdateAnimatedSprite(_srcTile, _nextTile);
+                }
+        }
+
+        private void Alert_Action()
+        {
+            float elapsedSeconds = ScalableGameTime.DeltaTime;
+            // Reach the next tile
+            if (_ghost.Position.Equals(_nextTilePosition) && _path.Count > 0)
+            {
+                    // Get the next tile and update animation
+                    _srcTile = _nextTile;
+                    _path.RemoveFirst();
+                    if (!_srcTile.Equals(_destTile))
+                    {
+                        _nextTile = _path.First.Value;
+                        _nextTilePosition = Tile.ToPosition(_nextTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
+                        _ghost.UpdateAnimatedSprite(_srcTile, _nextTile);
+                        facingDirection(_srcTile, _nextTile);
+                    }
+            }
+            if (_srcTile.Equals(_destTile))
+            {
+                Roam_Initialize();
+                CurrentState = State.Roam;
+            }
+            // Move the ghost to the new tile location
+            _ghost.Position = _ghost.Move(_ghost.Position, _nextTilePosition, elapsedSeconds);
+            _ghost.AnimatedSprite.Update(ScalableGameTime.GameTime);
+        }
+        #endregion
+
         // Luqman: Code
         // Determine's Vargas's facing direction and scans all tiles in that direction until a wall is hit, 
         // to check if Pacman is in vision range.
@@ -442,7 +535,7 @@ namespace PacmanGame
                     // var gid = tile.Value.GlobalIdentifier;
                     //Debug.WriteLine($"There is a tile at ({nextTile.Col}, {nextTile.Row}) with GID: {gid}");
                 }
-                if (nextTile.Equals(pacmanTile) && (CurrentState == State.Roam || CurrentState == State.HeatMap))
+                if (nextTile.Equals(pacmanTile) && !(CurrentState == State.Chase))
                 {
                     Debug.WriteLine("Pacman is in vision range.");
                     Chase_Initialize();

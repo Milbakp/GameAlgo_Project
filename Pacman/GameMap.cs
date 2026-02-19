@@ -21,6 +21,7 @@ namespace PacmanGame
         // Defines the row and column of any navigable tile to construct the tile graph
         public ushort StartColumn;
         public ushort StartRow;
+        public Tile goalTile;
 
         public GameMap(string name) : base(name)
         {
@@ -28,7 +29,7 @@ namespace PacmanGame
 
 		public override void LoadContent()
         {
-            TiledMap = _game.Content.Load<TiledMap>("LuqmanMap");
+            TiledMap = _game.Content.Load<TiledMap>("VargasSimpleMap");
         }
 
         public override void Initialize()
@@ -58,7 +59,11 @@ namespace PacmanGame
                     Tile startTile = Tile.ToTile(new Vector2(obj.Position.X, obj.Position.Y), TiledMap.TileWidth, TiledMap.TileHeight);
                     StartColumn = (ushort)startTile.Col;
                     StartRow = (ushort)startTile.Row;
-                    break;
+                    continue;
+                }else if(obj.Name == "Goal")
+                {
+                    goalTile = Tile.ToTile(new Vector2(obj.Position.X, obj.Position.Y), TiledMap.TileWidth, TiledMap.TileHeight);
+                    continue;
                 }
             }
 

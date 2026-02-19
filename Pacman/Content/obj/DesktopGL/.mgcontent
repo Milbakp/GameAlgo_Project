@@ -4,6 +4,7 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/VargasSimpleMap.tmx</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/graph-directions.png</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/LuqmanMap.tmx</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/pacman-sprites.png</File>
@@ -14,13 +15,6 @@
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/path.png</File>
   </SourceFiles>
   <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

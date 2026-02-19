@@ -33,7 +33,7 @@ namespace PacmanGame
         private Direction _currDirection;
         private Direction _prevDirection; // not in use anymore
 
-        private Tile _currTile;
+        public Tile _currTile;
         private Vector2 _nextTilePosition;
 
         private TiledMap _tiledMap;
@@ -61,9 +61,11 @@ namespace PacmanGame
             _tiledMapNavigableLayer = _tiledMap.GetLayer<TiledMapTileLayer>(NavigableTileLayerName);
 
             // Initialize positions
-            _currTile = new Tile(StartColumn, StartRow);
+            _currTile = new Tile(gameMap.StartColumn, gameMap.StartRow);
             Position = Tile.ToPosition(_currTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
             _nextTilePosition = Position;
+
+            HeatMap = new Dictionary<(int x, int y), float>();
 
             foreach (TiledMapTile? tile in _tiledMapNavigableLayer.Tiles)
             {
