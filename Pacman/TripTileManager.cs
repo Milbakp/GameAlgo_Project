@@ -75,37 +75,40 @@ namespace PacmanGame{
                 blockedTiles[tripTile] = false;
                 activeTiles[tripTile] = false;
             }
+            // Random initial trip tiles
             if(_pacman == null)
             {
-                int evenNum = 0;
-                foreach(Tile tile in _tripTiles)
+                Random rng = new Random();
+                var randomIndices = Enumerable.Range(0, _tripTiles.Count)
+                                            .OrderBy(x => rng.Next()) 
+                                            .Take(_tripTiles.Count / 2);
+                
+                foreach (int index in randomIndices)
                 {
-                    if(evenNum % 2 == 0)
-                    {
-                        activeTiles[tile] = true;
-                        _foodLayer.SetTile((ushort)tile.Col, (ushort)tile.Row, 4);
-                    }
-                    evenNum++;
+                    Tile tile = _tripTiles.ElementAt(index);
+                    activeTiles[tile] = true;
+                    _foodLayer.SetTile((ushort)tile.Col, (ushort)tile.Row, 4);
                 }
             }
             else
             {
-                int limit = (int)Math.Ceiling(_pacman.HeatMap.Count / 2.0);
-
-                Dictionary<(int x, int y), float> topHalf = _pacman.HeatMap.OrderByDescending(x => x.Value)
-                    .Take(limit)
-                    .ToDictionary(x => x.Key, x => x.Value);
-
+                // Getting all trip tiles and their corresponding heat map values, 
+                // then activating the top half of them with the highest heat map values.
+                Dictionary<Tile, float> tripTilesToActivate = new Dictionary<Tile, float>();
                 foreach(Tile tile in _tripTiles)
                 {
-                    if(topHalf.ContainsKey((tile.Col, tile.Row)))
-                    {
-                        activeTiles[tile] = true;
-                        _foodLayer.SetTile((ushort)tile.Col, (ushort)tile.Row, 4);
-                    }
+                    tripTilesToActivate[tile] = _pacman.HeatMap[(tile.Col, tile.Row)];
+                }
+                int limit = (int)Math.Ceiling(_tripTiles.Count / 2.0);
+                Dictionary<Tile, float> topHalf = tripTilesToActivate.OrderByDescending(x => x.Value)
+                    .Take(limit)
+                    .ToDictionary(x => x.Key, x => x.Value);
+                foreach (Tile tile in topHalf.Keys)
+                {
+                    activeTiles[tile] = true;
+                    _foodLayer.SetTile((ushort)tile.Col, (ushort)tile.Row, 4);
                 }
             }
-            
         }
     }
 }

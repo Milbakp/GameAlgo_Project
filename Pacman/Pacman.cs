@@ -80,6 +80,10 @@ namespace PacmanGame
                     }
                 } 
             }
+            else
+            {
+                averageHeatMap();
+            }
             _tripTileManager = (TripTileManager)GameObjectCollection.FindByName("TripTileManager");
         }
 
@@ -251,5 +255,39 @@ namespace PacmanGame
                 }
             }
         }
+        // uses gaussian blur to average the heatmap values of the surrounding tiles. 
+        // This will average out the values and make it less sensitive to outliers, giving a better representation of the overall heatmap.
+        public void averageHeatMap()
+        {
+            Dictionary<(int x, int y), float> bufferHeatMap = new Dictionary<(int x, int y), float>();
+            // Gaussian blur kernel
+            float[] kernel = {
+                 0.0625f, 0.125f, 0.0625f ,
+                 0.125f,  0.25f,  0.125f ,
+                 0.0625f, 0.125f, 0.0625f 
+            };
+            int[][] directionsNum = {[-1,1],  [0,1], [1,1],
+                                   [-1,0], [0,0], [1,0],
+                                   [-1,-1], [0,-1], [1,-1]};
+
+            foreach (TiledMapTile? tile in _tiledMapNavigableLayer.Tiles)
+            {
+                float newValue = 0;
+                if (tile.HasValue)
+                {
+                    if (!tile.Value.IsBlank)
+                    {
+                        for (int i = 0; i < directionsNum.Length; i++){     
+                            if(HeatMap.ContainsKey((tile.Value.X + directionsNum[i][0], tile.Value.Y + directionsNum[i][1])))
+                            {
+                                newValue += HeatMap[(tile.Value.X + directionsNum[i][0], tile.Value.Y + directionsNum[i][1])] * kernel[i];
+                            }              
+                        }
+                        bufferHeatMap.Add((tile.Value.X, tile.Value.Y), newValue);
+                    }
+                }
+            }
+            HeatMap = bufferHeatMap;
+        } 
     }
 }

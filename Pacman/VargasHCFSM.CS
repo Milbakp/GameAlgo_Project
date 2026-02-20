@@ -6,6 +6,8 @@ using MonoGame.Extended.Tiled;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
+using System;
 
 namespace PacmanGame
 {
@@ -66,7 +68,7 @@ namespace PacmanGame
             CurrentState = State.Roam;
             inVision = false;
 
-            RoamMaxSeconds = 3f;
+            RoamMaxSeconds = 10f;
             ChaseMaxSeconds = 3f;
             _roamRemainingSeconds = 0f;
             _chaseRemainingSeconds = 0f;
@@ -95,24 +97,17 @@ namespace PacmanGame
         // Lab 11 (Problem 3): New Update()
         public override void Update()
         {
-            // Comment out this line to test Chase action
-            // Roam_Action();
-
-            // Lab 11 (Problem 3)
-            // Chase_Action();
-
 		if (CurrentState == State.Roam)
             {
-                // if (TransitionTriggered_RoamToChase())
-                // {
-                //     Chase_Initialize();
-                //     CurrentState = State.Chase;
-                // }
-                // else
-                // {
-                //     Roam_Action();
-                // }
-                Roam_Action();
+                if (TransitionTriggered_RoamToHeatMap())
+                {
+                    HeatMap_Initialize();
+                    CurrentState = State.HeatMap;
+                }
+                else
+                {
+                    Roam_Action();
+                }
             }
             else if (CurrentState == State.Chase)
             {
@@ -166,6 +161,7 @@ namespace PacmanGame
 
             // Initialize source tile from owner's current position
             _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            _roamRemainingSeconds = RoamMaxSeconds;
         }
 
         private void Roam_Action()
@@ -378,14 +374,15 @@ namespace PacmanGame
         #endregion
 
         //// TRANSITIONS ////
+        #region TRANSITIONS
         //// Lab11 (Problem 4)
-		private bool TransitionTriggered_RoamToChase()
+		private bool TransitionTriggered_RoamToHeatMap()
         {
-        // Roaming has no seconds remaining
+            // Roaming has no seconds remaining
             if (_roamRemainingSeconds <= 0)
             {
                 // Reset roaming seconds
-                _roamRemainingSeconds = 3;
+                _roamRemainingSeconds = RoamMaxSeconds;
                 return true;
             }
 
@@ -408,6 +405,7 @@ namespace PacmanGame
             return false;
 			
         }
+        #endregion
         //// HeatMap STATE ////
         #region HeatMap State Methods
         private void HeatMap_Initialize()
@@ -418,19 +416,17 @@ namespace PacmanGame
             _nextTilePosition = _ghost.Position;
             _nextTile = Tile.ToTile(_nextTilePosition, _tiledMap.TileWidth, _tiledMap.TileHeight);
             _path.Clear();
-            KeyValuePair<(int x, int y), float> maxEntry = default;
-            bool first = true;
 
-            foreach (var entry in _pacman.HeatMap)
-            {
-                if (first || entry.Value > maxEntry.Value)
-                {
-                    maxEntry = entry;
-                    first = false;
-                }
-            }
+            // Get top 10 warmest tiles and randomly choose one of them to visit.
+            Dictionary<(int x, int y), float> topHalf = _pacman.HeatMap.OrderByDescending(x => x.Value)
+                    .Take(10)
+                    .ToDictionary(x => x.Key, x => x.Value);
+
+            Random rng = new Random();
+            (int x, int y) newTile = topHalf.ElementAt(rng.Next(topHalf.Count)).Key;
+
             _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
-            _destTile = new Tile(maxEntry.Key.x, maxEntry.Key.y);
+            _destTile = new Tile(newTile.x, newTile.y);
             _path = AStar.Compute(_tileGraph, _srcTile, _destTile, AStarHeuristic.EuclideanSquared);
             _path.RemoveFirst();
 
