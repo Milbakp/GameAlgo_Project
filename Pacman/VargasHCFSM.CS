@@ -44,6 +44,8 @@ namespace PacmanGame
         public TripTileManager _tripTileManager;
         private Tile _goalTile;
         private bool inVision;
+        private Tile _nearestTripTile;
+        private TiledMapTileLayer _foodLayer;
 
         // Lab 11 (Problem 3): New Constructor
         public VargasHCFSM(GameEngine game, Ghost ghost, TiledMap map, TileGraph graph, Pacman pacman)
@@ -56,29 +58,14 @@ namespace PacmanGame
             _tileGraph = graph;
             _pacman = pacman;
             _tripTileManager = (TripTileManager)GameObjectCollection.FindByName("TripTileManager");
-            // if (_tripTileManager == null)
-            // {
-            //     Debug.WriteLine("Error: TripTileManager not found in GameObjectCollection!");
-            // }
-            // else
-            // {
-            //     Debug.WriteLine("TripTileManager found in GameObjectCollection!");
-            // }
+            _nearestTripTile = new Tile(-1, -1);
+            _foodLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Food");
         }
-
-        // Lab 11 (Problem 3): New Initialize()
         public override void Initialize()
         {
             CurrentState = State.Roam;
             inVision = false;
 
-            // Comment out this line to test the Chase state below.
-            // Roam_Initialize();
-
-			// Comment out for Lab 11 (Problem 4)
-            // Chase_Initialize();
-
-            // Lab 11 (Problem 4) only
             RoamMaxSeconds = 3f;
             ChaseMaxSeconds = 3f;
             _roamRemainingSeconds = 0f;
@@ -131,6 +118,12 @@ namespace PacmanGame
             {
                 if (TransitionTriggered_ChaseToRoam())
                 {
+                    // Resets tile to be unblocked when changing to roam state.
+                    if (_tripTileManager.blockedTiles.ContainsKey(_nearestTripTile))
+                    {
+                        _tripTileManager.blockedTiles[_nearestTripTile] = false;
+                        _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 4);
+                    }
                     Roam_Initialize();
                     CurrentState = State.Roam;
                 }
@@ -161,8 +154,6 @@ namespace PacmanGame
                 CurrentState = State.Alert;
                 Alert_Initialize();
             }
-            // Tile nearestTripTile = Calculate_NearestTripTile();
-            // _tripTileManager.blockedTiles[nearestTripTile] = true;
         }
 
         /// ROAM STATE /// <summary>
@@ -297,8 +288,16 @@ namespace PacmanGame
                     }
                 }
             }
-            Tile nearestTripTile = Calculate_NearestTripTile();
-            _tripTileManager.blockedTiles[nearestTripTile] = true;
+            // Resets tile to be unblocked if the new nearest trip tile is diffenrent
+            if (_tripTileManager.blockedTiles.ContainsKey(_nearestTripTile))
+            {
+                _tripTileManager.blockedTiles[_nearestTripTile] = false;
+                _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 4);
+            }
+            // Blocking nearest trip tile.
+            _nearestTripTile = Calculate_NearestTripTile();
+            _tripTileManager.blockedTiles[_nearestTripTile] = true;
+            _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 1);
 
             // Move the ghost to the new tile location
             _ghost.Position = _ghost.Move(_ghost.Position, _nextTilePosition, elapsedSeconds);

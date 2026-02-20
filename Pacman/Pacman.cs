@@ -104,14 +104,18 @@ namespace PacmanGame
                 ushort col = (ushort)nextTile.Col;
                 ushort row = (ushort)nextTile.Row;
 
-                if (_tiledMapNavigableLayer.TryGetTile(col, row, out TiledMapTile? nextTiledMapTile)|| 
-                    (_tripTileManager.blockedTiles.ContainsKey(nextTile) && _tripTileManager.blockedTiles[nextTile]))
+                if (_tiledMapNavigableLayer.TryGetTile(col, row, out TiledMapTile? nextTiledMapTile))
                 {
                         // BLANK: Pacman/Player found the next tile non-navigable
                         if (nextTiledMapTile.Value.IsBlank)
                         {
                             nextTile = _currTile;
                         }
+                }
+                // Prevents Pacman/Player from moving into a blocked trip tile.
+                if(_tripTileManager.blockedTiles.ContainsKey(nextTile) && _tripTileManager.blockedTiles[nextTile])
+                {
+                    nextTile = _currTile;
                 }
 
                 // Update animation
