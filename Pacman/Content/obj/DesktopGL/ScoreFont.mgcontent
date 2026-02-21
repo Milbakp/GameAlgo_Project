@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/File.spritefont</SourceFile>
+  <SourceTime>2026-02-21T12:09:10.0496629+08:00</SourceTime>
+  <DestFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/ScoreFont.xnb</DestFile>
+  <DestTime>2026-02-21T12:09:13.3467484+08:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2025-10-20T22:25:32+08:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2025-10-20T22:25:32+08:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

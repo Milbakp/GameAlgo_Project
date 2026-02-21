@@ -68,7 +68,7 @@ namespace PacmanGame
             CurrentState = State.Roam;
             inVision = false;
 
-            RoamMaxSeconds = 10f;
+            RoamMaxSeconds = 12f;
             ChaseMaxSeconds = 3f;
             _roamRemainingSeconds = 0f;
             _chaseRemainingSeconds = 0f;
@@ -157,7 +157,7 @@ namespace PacmanGame
         private void Roam_Initialize()
         {
             // Set the ghost Speed
-            _ghost.MaxSpeed = 100.0f;
+            _ghost.MaxSpeed = 120.0f;
 
             // Initialize source tile from owner's current position
             _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
@@ -249,7 +249,7 @@ namespace PacmanGame
         #region CHASE STATE METHODS
         private void Chase_Initialize()
         {
-            _ghost.MaxSpeed = 120.0f;
+            _ghost.MaxSpeed = 140.0f;
 
             // Initialize the next tile position
             _nextTilePosition = _ghost.Position;
@@ -275,7 +275,7 @@ namespace PacmanGame
                     // Get the next tile and update animation
                     _srcTile = _nextTile;
                     _path.RemoveFirst();
-                    if (!_srcTile.Equals(_destTile))
+                    if (!_srcTile.Equals(_destTile) && _path.Count > 0)
                     {
                         _nextTile = _path.First.Value;
                         _nextTilePosition = Tile.ToPosition(_nextTile, _tiledMap.TileWidth, _tiledMap.TileHeight);
@@ -410,7 +410,7 @@ namespace PacmanGame
         #region HeatMap State Methods
         private void HeatMap_Initialize()
         {
-            _ghost.MaxSpeed = 120.0f;
+            _ghost.MaxSpeed = 140.0f;
 
             // Initialize the next tile position
             _nextTilePosition = _ghost.Position;
@@ -419,7 +419,7 @@ namespace PacmanGame
 
             // Get top 10 warmest tiles and randomly choose one of them to visit.
             Dictionary<(int x, int y), float> topHalf = _pacman.HeatMap.OrderByDescending(x => x.Value)
-                    .Take(10)
+                    .Take(20)
                     .ToDictionary(x => x.Key, x => x.Value);
 
             Random rng = new Random();
@@ -523,24 +523,19 @@ namespace PacmanGame
         }
         #endregion
 
-        // Luqman: Code
         // Determine's Vargas's facing direction and scans all tiles in that direction until a wall is hit, 
         // to check if Pacman is in vision range.
         private void facingDirection(Tile ghostTile, Tile nextTile)
         {
-            // string[] directions = {"NorthWest", "Up"    , "NorthEast",
-            //                        "Left"     , "Centre", "Right"    ,
-            //                        "SouthWest", "Down"  , "SouthEast"};
-
             Tile difference = new Tile(nextTile.Col - ghostTile.Col, nextTile.Row - ghostTile.Row);
             int index = (difference.Col + 1) + 3 * (difference.Row + 1);
 
-            // direction = directions[index];
-            // Debug.WriteLine($"Direction: {direction}");
-
-            int[][] directionsNum = {[0,0],  [0,1], [0,0],
-                                   [-1,0], [0,0], [1,0],
-                                   [0,0], [0,-1], [0,0]};
+            // The diagonals are all -10000,-10000 because sometimes, (presumably due to nextTile and ghostTile being out of syn), 
+            // the index can return values like 0 or 2. If it takes the 0,0 values, then the loop is infite as it will keep checking the same tile for pacman.
+            // To prevent this, I set the diagonals to -10000, -10000 which will break the loop immediately as this tile does not exist.
+            int[][] directionsNum = {[-10000,-10000],  [0,1], [-10000,-10000],
+                                   [-1,0], [-10000,-10000], [1,0],
+                                   [-10000,-10000], [0,-1], [-10000,-10000]};
             int[] directionNum = directionsNum[index];
 
             TiledMapTileLayer foodLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Food");
@@ -571,7 +566,6 @@ namespace PacmanGame
                 }
                 nextTile = new Tile(nextTile.Col + directionNum[0], nextTile.Row + directionNum[1]);
             }
-            
         }
     }
 }

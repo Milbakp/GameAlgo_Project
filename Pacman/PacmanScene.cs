@@ -1,5 +1,8 @@
 ﻿using GAlgoT2530.Engine;
+using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace PacmanGame
 {
@@ -9,6 +12,8 @@ namespace PacmanGame
         private Ghost _ghost;
         private Pacman _pacman;
         private Tile _goalTile;
+        private ScoreUI _scoreUI;
+
         public override void CreateScene()
         {
             // Game map
@@ -30,36 +35,35 @@ namespace PacmanGame
             // _pacman.StartColumn = _gameMap.StartColumn;
             _pacman.NavigableTileLayerName = "Food";
 
-
-
             // Trip Tile Manager
             TripTileManager tripTileManager = new TripTileManager();
 
+            _scoreUI = new ScoreUI();
+            _scoreUI.Initialize();
         }
+
+        
         // Updating the map, replaces the power pellet tile with tthe empty tile.
         public override void Update()
         {
             _gameMap.Update();
             if (_pacman._currTile.Equals(_gameMap.goalTile))
             {
+                _scoreUI.winScore++;
                 RestartScene();
             }
             if (_pacman._currTile.Equals(Tile.ToTile(_ghost.Position, _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight)))
             {
+                _scoreUI.loseScore++;
                 RestartScene();
             }
         }
 
         public void RestartScene()
         {
-            // Initialize positions
-            // Tile _startTile = new Tile(_pacman.StartColumn, _pacman.StartRow);
-            // _pacman.Position = Tile.ToPosition(_startTile, _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight);
-            // // _pacman._nextTilePosition = _pacman.Position;
-            // Tile startTile = new Tile(_gameMap.StartColumn, _gameMap.StartRow);
-            // _ghost.Position = Tile.ToPosition(startTile, _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight);
             _ghost.Initialize();
             _pacman.Initialize();
         }
+        
     }
 }

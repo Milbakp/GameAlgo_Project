@@ -9,14 +9,6 @@ namespace PacmanGame
     {
         public TiledMap TiledMap { get; private set; }
         public TiledMapRenderer TiledMapRenderer { get; private set; }
-		
-	/********************************************************************************
-        PROBLEM 7 : Define Tile Graph.
-
-        HOWTOSOLVE : 1. Just uncomment the given code below.
-
-        public TileGraph TileGraph { get; private set; }
-    ********************************************************************************/
         public TileGraph TileGraph { get; private set; }
         // Defines the row and column of any navigable tile to construct the tile graph
         public ushort StartColumn;
@@ -39,16 +31,7 @@ namespace PacmanGame
 
             // Get the Food layer from the tiled map
             TiledMapTileLayer foodLayer = TiledMap.GetLayer<TiledMapTileLayer>("Food");
-            
-        /********************************************************************************
-            PROBLEM 7 : Construct tile graph from the food layer.
 
-            HOWTOSOLVE : 1. Just uncomment the given code.
-
-            TileGraph = new TileGraph();
-            TileGraph.CreateFromTiledMapTileLayer(foodLayer, StartColumn, StartRow);
-        ********************************************************************************/
-            // Luqman Edits:
             // Setting home tile dynamically/automatically
             TiledMapObjectLayer wayPoints = TiledMap.GetLayer<TiledMapObjectLayer>("WayPoints");
 
