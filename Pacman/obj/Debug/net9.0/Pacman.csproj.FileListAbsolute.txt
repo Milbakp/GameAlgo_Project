@@ -89,3 +89,4 @@ c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\obj\Deb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\obj\Debug\net9.0\Pacman.sourcelink.json
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\VargasSimpleMap.xnb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\ScoreFont.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\InvertedGhost.xnb

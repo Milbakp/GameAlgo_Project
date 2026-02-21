@@ -6,6 +6,7 @@
   <SourceFiles>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/File.spritefont</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/graph-directions.png</File>
+    <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/InvertedGhost.png</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/LuqmanMap.tmx</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/pacman-sprites.png</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/pacman-wall-24.png</File>
@@ -17,6 +18,7 @@
   </SourceFiles>
   <DestFiles>
     <File>ScoreFont.spritefont</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

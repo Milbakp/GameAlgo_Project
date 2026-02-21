@@ -21,7 +21,7 @@ namespace PacmanGame
         // Visual appearance
         private Rectangle _ghostRect;
 
-        public Ghost() : base("ghost-animations.sf")
+        public Ghost() : base("Vargas","vargasAnimations.sf")
         {
         }
 

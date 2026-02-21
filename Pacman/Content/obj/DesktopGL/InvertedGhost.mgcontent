@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/pacman-sprites.png</SourceFile>
-  <SourceTime>2026-01-13T10:48:53.654572+08:00</SourceTime>
-  <DestFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/pacman-sprites.xnb</DestFile>
-  <DestTime>2026-02-21T14:22:22.2782233+08:00</DestTime>
+  <SourceFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/InvertedGhost.png</SourceFile>
+  <SourceTime>2026-02-21T13:57:27.4408257+08:00</SourceTime>
+  <DestFile>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/bin/DesktopGL/InvertedGhost.xnb</DestFile>
+  <DestTime>2026-02-21T14:22:22.0636747+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T22:25:32+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

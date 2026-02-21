@@ -107,6 +107,14 @@ namespace PacmanGame
                 nextTile = GetNextTileFromDirection(_currDirection);
                 ushort col = (ushort)nextTile.Col;
                 ushort row = (ushort)nextTile.Row;
+                
+                // Keep Player in bounds
+                ushort windowWidthInTiles = (ushort)(_game.GraphicsDevice.Viewport.Width / _tiledMap.TileWidth);
+                ushort windowHeightInTiles = (ushort)(_game.GraphicsDevice.Viewport.Height / _tiledMap.TileHeight);
+                if (col < 0 || col >= windowWidthInTiles || row < 0 || row >= windowHeightInTiles)
+                {
+                    nextTile = _currTile;
+                }
 
                 if (_tiledMapNavigableLayer.TryGetTile(col, row, out TiledMapTile? nextTiledMapTile))
                 {

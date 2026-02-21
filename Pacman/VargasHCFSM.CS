@@ -94,7 +94,6 @@ namespace PacmanGame
             _tripTileManager.setMap();
         }
 
-        // Lab 11 (Problem 3): New Update()
         public override void Update()
         {
 		if (CurrentState == State.Roam)
@@ -117,7 +116,14 @@ namespace PacmanGame
                     if (_tripTileManager.blockedTiles.ContainsKey(_nearestTripTile))
                     {
                         _tripTileManager.blockedTiles[_nearestTripTile] = false;
-                        _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 4);
+                        if(_tripTileManager.activeTiles[_nearestTripTile])
+                        {
+                            _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 4);
+                        }
+                        else
+                        {
+                            _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 5);
+                        }
                     }
                     Roam_Initialize();
                     CurrentState = State.Roam;
@@ -288,7 +294,14 @@ namespace PacmanGame
             if (_tripTileManager.blockedTiles.ContainsKey(_nearestTripTile))
             {
                 _tripTileManager.blockedTiles[_nearestTripTile] = false;
-                _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 4);
+                if(_tripTileManager.activeTiles[_nearestTripTile])
+                {
+                    _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 4);
+                }
+                else
+                {
+                    _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 5);
+                }
             }
             // Blocking nearest trip tile.
             _nearestTripTile = Calculate_NearestTripTile();
@@ -544,6 +557,10 @@ namespace PacmanGame
             inVision = false;
             while(true)
             {
+                if (directionNum[0] == -10000 && directionNum[1] == -10000)
+                {
+                    break;
+                }
                 if (foodLayer.TryGetTile((ushort)nextTile.Col, (ushort)nextTile.Row, out tile)) 
                 {
                     if (tile.Value.IsBlank) 
