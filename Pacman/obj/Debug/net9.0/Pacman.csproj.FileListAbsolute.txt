@@ -97,3 +97,6 @@ c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Deb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\WinSound.xnb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\BlockSound.xnb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\WinLoseFont.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\VargasMap.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\VargasTileSet_0.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\VargasTiles_0.xnb

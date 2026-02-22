@@ -138,7 +138,6 @@ namespace PacmanGame
                 {
                     Chase_Action();
                 }
-                //Chase_Action();
             }
             else if(CurrentState == State.HeatMap)
             {
@@ -153,12 +152,7 @@ namespace PacmanGame
                 // Do nothing.
             }
 
-            // KeyboardState keyboardState = Keyboard.GetState();
-            // if (keyboardState.IsKeyDown(Keys.H))
-            // {
-            //     CurrentState = State.HeatMap;
-            //     HeatMap_Initialize();
-            // }
+            // Starts Alert state when trip tile is alerted, and reset the alert.
             if(_tripTileManager.alert == true && CurrentState != State.Chase)
             {
                 _tripTileManager.alert = false;
@@ -389,11 +383,19 @@ namespace PacmanGame
         // Calculate the nearest trip tile and block it off. Luqman
         private Tile Calculate_NearestTripTile()
         {
-            //_srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
+            
             LinkedList<Tile> nearestTripTilePath = new LinkedList<Tile>();
-            int currentNearest = _tiledMap.Width * _tiledMap.Height;
+            int currentNearest = _tiledMap.Width * _tiledMap.Height; // Dummy value larger than any possible path.
             foreach(Tile tile in _tripTileManager._tripTiles)
             {
+                // Optimization to skip calculating path for trip tiles that are too far away from pacman, 
+                // as they won't be the nearest one.
+                int xDistance = Math.Abs(tile.Col - _pacman._currTile.Col);
+                int yDistance = Math.Abs(tile.Row - _pacman._currTile.Row);
+                if(xDistance + yDistance >= 12)
+                {
+                    continue;
+                }
                 LinkedList<Tile> tmpPath = AStar.Compute(_tileGraph, _pacman._currTile, tile, AStarHeuristic.EuclideanSquared);
                 if(tmpPath.Count < currentNearest)
                 {
@@ -407,7 +409,6 @@ namespace PacmanGame
 
         //// TRANSITIONS ////
         #region TRANSITIONS
-        //// Lab11 (Problem 4)
 		private bool TransitionTriggered_RoamToHeatMap()
         {
             // Roaming has no seconds remaining
@@ -442,7 +443,7 @@ namespace PacmanGame
         #region HeatMap State Methods
         private void HeatMap_Initialize()
         {
-            _ghost.MaxSpeed = 140.0f;
+            _ghost.MaxSpeed = 200.0f;
 
             // Initialize the next tile position
             _nextTilePosition = _ghost.Position;
@@ -504,7 +505,7 @@ namespace PacmanGame
         #region Alert State Methods
         private void Alert_Initialize()
         {
-            _ghost.MaxSpeed = 150.0f;
+            _ghost.MaxSpeed = 500.0f;
 
             // Initialize the next tile position
             _nextTilePosition = _ghost.Position;

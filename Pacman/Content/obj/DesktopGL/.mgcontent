@@ -18,11 +18,13 @@
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/PacmanMap2.tmx</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/path.png</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/ScoreFont.spritefont</File>
+    <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/VargasMap.tmx</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/VargasSimpleMap.tmx</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/WinLoseFont.spritefont</File>
     <File>c:/Users/luqma/Desktop/GameAlgo/GameAlgo_Project/GameAlgo_Project/Pacman/Content/WinSound.wav</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

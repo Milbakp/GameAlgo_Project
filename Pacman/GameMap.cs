@@ -21,7 +21,7 @@ namespace PacmanGame
 
 		public override void LoadContent()
         {
-            TiledMap = _game.Content.Load<TiledMap>("VargasSimpleMap");
+            TiledMap = _game.Content.Load<TiledMap>("VargasMap");
         }
 
         public override void Initialize()

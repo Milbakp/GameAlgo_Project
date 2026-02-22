@@ -125,6 +125,11 @@
 /processorParam:TextureFormat=Compressed
 /build:ScoreFont.spritefont
 
+#begin VargasMap.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:VargasMap.tmx
+
 #begin VargasSimpleMap.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
