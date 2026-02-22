@@ -14,12 +14,23 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin File.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:File.spritefont;ScoreFont.spritefont
+#begin Alarm.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Alarm.wav
+
+#begin BlockSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:BlockSound.wav
+
+#begin ChaseMusic.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:ChaseMusic.mp3
 
 #begin graph-directions.png
 /importer:TextureImporter
@@ -44,6 +55,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:InvertedGhost.png
+
+#begin LoseSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:LoseSound.wav
 
 #begin LuqmanMap.tmx
 /importer:TiledMapImporter
@@ -101,8 +118,28 @@
 /processorParam:TextureFormat=Color
 /build:path.png
 
+#begin ScoreFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:ScoreFont.spritefont
+
 #begin VargasSimpleMap.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:VargasSimpleMap.tmx
+
+#begin WinLoseFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:WinLoseFont.spritefont
+
+#begin WinSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:WinSound.wav
 

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace PacmanGame
 {
@@ -13,6 +14,9 @@ namespace PacmanGame
         private Pacman _pacman;
         private Tile _goalTile;
         private ScoreUI _scoreUI;
+        private SoundEffect LoseSound, WinSound;
+        private float _gameOverDelaySeconds;
+        private float _gameOverTimer;
 
         public override void CreateScene()
         {
@@ -40,6 +44,12 @@ namespace PacmanGame
 
             _scoreUI = new ScoreUI();
             _scoreUI.Initialize();
+
+            LoseSound = _game.Content.Load<SoundEffect>("LoseSound");
+            WinSound = _game.Content.Load<SoundEffect>("WinSound");
+
+            _gameOverDelaySeconds = 5f;
+            _gameOverTimer = _gameOverDelaySeconds;
         }
 
         
@@ -47,22 +57,40 @@ namespace PacmanGame
         public override void Update()
         {
             _gameMap.Update();
-            if (_pacman._currTile.Equals(_gameMap.goalTile))
+            if (!_pacman.isGameOver)
             {
-                _scoreUI.winScore++;
-                RestartScene();
+                if (_pacman._currTile.Equals(_gameMap.goalTile))
+                {
+                    _pacman.isGameOver = true;
+                    WinSound.Play();
+                    _scoreUI.winScore++;
+                    _scoreUI.CurrentGameState = ScoreUI.GameState.Win;
+                }
+                if (_pacman._currTile.Equals(Tile.ToTile(_ghost.Position, _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight)))
+                {
+                    _pacman.isGameOver = true;
+                    LoseSound.Play();
+                    _scoreUI.loseScore++;
+                    _scoreUI.CurrentGameState = ScoreUI.GameState.Lose;
+                }
             }
-            if (_pacman._currTile.Equals(Tile.ToTile(_ghost.Position, _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight)))
+            else
             {
-                _scoreUI.loseScore++;
-                RestartScene();
+                if (_gameOverTimer < 0)
+                {
+                    _gameOverTimer = _gameOverDelaySeconds;
+                    RestartScene();
+                }
+                _gameOverTimer -= ScalableGameTime.DeltaTime;
             }
+            
         }
 
         public void RestartScene()
         {
             _ghost.Initialize();
             _pacman.Initialize();
+            _scoreUI.CurrentGameState = ScoreUI.GameState.Playing;
         }
         
     }

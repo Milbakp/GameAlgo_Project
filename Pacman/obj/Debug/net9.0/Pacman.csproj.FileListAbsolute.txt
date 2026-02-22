@@ -90,3 +90,10 @@ c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\obj\Deb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\VargasSimpleMap.xnb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\ScoreFont.xnb
 c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\InvertedGhost.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\Alarm.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\ChaseMusic.ogg
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\ChaseMusic.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\LoseSound.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\WinSound.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\BlockSound.xnb
+c:\Users\luqma\Desktop\GameAlgo\GameAlgo_Project\GameAlgo_Project\Pacman\bin\Debug\net9.0\Content\WinLoseFont.xnb

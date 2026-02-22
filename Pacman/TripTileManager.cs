@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using System;
+using Microsoft.Xna.Framework.Audio;
 
 namespace PacmanGame{
     public class TripTileManager : GameObject
@@ -20,6 +21,7 @@ namespace PacmanGame{
         //private VargasHCFSM _vargasHCFSM;
         public bool alert;
         private Tile _alertedTile;
+        private SoundEffect TripTileSound;
 
         public TripTileManager() : base("TripTileManager")
         {
@@ -29,6 +31,7 @@ namespace PacmanGame{
         {
             _pacman = (Pacman)GameObjectCollection.FindByName("Pacman");
             alert = false;
+            TripTileSound = _game.Content.Load<SoundEffect>("Alarm");
         }
 
         public override void Update()
@@ -37,8 +40,8 @@ namespace PacmanGame{
             {
                 if(tile.Equals(_pacman._currTile) && activeTiles[tile])
                 {
+                    TripTileSound.Play();
                     Debug.WriteLine("Pacman reached a trip tile at " + tile.Col + ", " + tile.Row);
-                    //_vargasHCFSM.CurrentState = VargasHCFSM.State.Alert;
                     alert = true;
                     _alertedTile = tile;
                     break;

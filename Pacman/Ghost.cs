@@ -16,10 +16,6 @@ namespace PacmanGame
         // FSM for navigation
         public HCFSM FSM;
         public float MaxSpeed;
-        // public Texture2D Texture;
-
-        // Visual appearance
-        private Rectangle _ghostRect;
 
         public Ghost() : base("Vargas","vargasAnimations.sf")
         {
@@ -27,19 +23,6 @@ namespace PacmanGame
 
         public override void Initialize()
         {
-            //_gameEngine = new GameEngine("Pacman Game", 696, 432);
-
-            // For normal ghost behaviors from lab 11
-            // GameMap gameMap = (GameMap)GameObjectCollection.FindByName("GameMap");
-            // Tile startTile = new Tile(gameMap.StartColumn, gameMap.StartRow);
-            // Position = Tile.ToPosition(startTile, gameMap.TiledMap.TileWidth, gameMap.TiledMap.TileHeight);
-            // Pacman pacman = (Pacman)GameObjectCollection.FindByName("Pacman");
-            // FSM = new GhostHCFSM(_game, this, gameMap.TiledMap, gameMap.TileGraph, pacman);
-
-            //FSM = new NavigationHCFSM(this, NavigationHCFSM.NavigationState.STOP);
-            // Assingment 2
-            //FSM = new CollectPowerPelletHCFSM(this, CollectPowerPelletHCFSM.NavigationState.STOP);
-
             // Project
             GameMap gameMap = (GameMap)GameObjectCollection.FindByName("GameMap");
             Tile startTile = new Tile(gameMap.StartColumn, gameMap.StartRow);

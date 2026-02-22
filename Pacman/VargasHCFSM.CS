@@ -8,12 +8,14 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using System;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace PacmanGame
 {
     public class VargasHCFSM : HCFSM
     {
-        public enum State { Roam, Chase, HeatMap, Alert, Scanning};
+        public enum State { Roam, Chase, HeatMap, Alert, GameOver};
 
         public State CurrentState;
         private GameEngine _game;
@@ -40,16 +42,15 @@ namespace PacmanGame
         private float _chaseRemainingSeconds;
 
         // New variables
-        // public enum Direction {Up,Down,Left,Right,};
-        // public Direction direction;
         public string direction;
         public TripTileManager _tripTileManager;
         private Tile _goalTile;
         private bool inVision;
         private Tile _nearestTripTile;
         private TiledMapTileLayer _foodLayer;
+        private Song _chaseMusic;
+        private SoundEffect _blockSound;
 
-        // Lab 11 (Problem 3): New Constructor
         public VargasHCFSM(GameEngine game, Ghost ghost, TiledMap map, TileGraph graph, Pacman pacman)
         {
             _path = new LinkedList<Tile>();
@@ -62,9 +63,13 @@ namespace PacmanGame
             _tripTileManager = (TripTileManager)GameObjectCollection.FindByName("TripTileManager");
             _nearestTripTile = new Tile(-1, -1);
             _foodLayer = _tiledMap.GetLayer<TiledMapTileLayer>("Food");
+            _blockSound = _game.Content.Load<SoundEffect>("BlockSound");
+            _chaseMusic = _game.Content.Load<Song>("ChaseMusic");
+            MediaPlayer.IsRepeating = true;
         }
         public override void Initialize()
         {
+            MediaPlayer.Stop();
             CurrentState = State.Roam;
             inVision = false;
 
@@ -127,6 +132,7 @@ namespace PacmanGame
                     }
                     Roam_Initialize();
                     CurrentState = State.Roam;
+                    MediaPlayer.Stop();
                 }
                 else
                 {
@@ -142,18 +148,27 @@ namespace PacmanGame
             {
                 Alert_Action();
             }
-
-            KeyboardState keyboardState = Keyboard.GetState();
-            if (keyboardState.IsKeyDown(Keys.H))
+            else if(CurrentState == State.GameOver)
             {
-                CurrentState = State.HeatMap;
-                HeatMap_Initialize();
+                // Do nothing.
             }
+
+            // KeyboardState keyboardState = Keyboard.GetState();
+            // if (keyboardState.IsKeyDown(Keys.H))
+            // {
+            //     CurrentState = State.HeatMap;
+            //     HeatMap_Initialize();
+            // }
             if(_tripTileManager.alert == true && CurrentState != State.Chase)
             {
                 _tripTileManager.alert = false;
                 CurrentState = State.Alert;
                 Alert_Initialize();
+            }
+            if (_pacman.isGameOver && CurrentState != State.GameOver)
+            {
+                MediaPlayer.Stop();
+                CurrentState = State.GameOver;
             }
         }
 
@@ -266,8 +281,6 @@ namespace PacmanGame
         {
             float elapsedSeconds = ScalableGameTime.DeltaTime;
 
-            // Lab11 (Problem 4): Update chase countdown timer
-
             _chaseRemainingSeconds -= ScalableGameTime.DeltaTime;
             // Reach the next tile
             if (_ghost.Position.Equals(_nextTilePosition))
@@ -304,9 +317,15 @@ namespace PacmanGame
                 }
             }
             // Blocking nearest trip tile.
+            Tile checkingChangeTile = _nearestTripTile;
             _nearestTripTile = Calculate_NearestTripTile();
             _tripTileManager.blockedTiles[_nearestTripTile] = true;
             _foodLayer.SetTile((ushort)_nearestTripTile.Col, (ushort)_nearestTripTile.Row, 1);
+            // Make the sound only plays when the nearest trip tile changes.
+            if(!checkingChangeTile.Equals(_nearestTripTile))
+            {
+                _blockSound.Play();
+            }
 
             // Move the ghost to the new tile location
             _ghost.Position = _ghost.Move(_ghost.Position, _nextTilePosition, elapsedSeconds);
@@ -576,6 +595,7 @@ namespace PacmanGame
                 }
                 if (nextTile.Equals(pacmanTile) && !(CurrentState == State.Chase))
                 {
+                    MediaPlayer.Play(_chaseMusic);
                     Debug.WriteLine("Pacman is in vision range.");
                     Chase_Initialize();
                     CurrentState = State.Chase;

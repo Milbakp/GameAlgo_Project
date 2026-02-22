@@ -26,5 +26,7 @@ Important scripts:
             position for a few seconds afterwards)
 
         Alert - If the player passes a trip spot, Vargas is alerted and will travel to the trip spot location
+
+        GameOver - If the player wins or losses, Vargas enters this state and stays idle. 
     - ScoreUI.cs
         - Displaying the score ui.

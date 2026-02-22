@@ -41,6 +41,7 @@ namespace PacmanGame
         // New Project variables
         public Dictionary<(int x, int y), float> HeatMap = new Dictionary<(int x, int y), float>();
         private TripTileManager _tripTileManager;
+        public bool isGameOver;
 
         public Pacman() : base("Pacman", "pacman-animations.sf")
         {
@@ -85,10 +86,15 @@ namespace PacmanGame
                 averageHeatMap();
             }
             _tripTileManager = (TripTileManager)GameObjectCollection.FindByName("TripTileManager");
+            isGameOver = false;
         }
 
         public override void Update()
         {
+            if(isGameOver)
+            {
+                return;
+            }
             // Update direction from user input
             Direction newDirection = GetDirectionFromInput();
             UpdateDirection(newDirection);
@@ -107,7 +113,7 @@ namespace PacmanGame
                 nextTile = GetNextTileFromDirection(_currDirection);
                 ushort col = (ushort)nextTile.Col;
                 ushort row = (ushort)nextTile.Row;
-                
+
                 // Keep Player in bounds
                 ushort windowWidthInTiles = (ushort)(_game.GraphicsDevice.Viewport.Width / _tiledMap.TileWidth);
                 ushort windowHeightInTiles = (ushort)(_game.GraphicsDevice.Viewport.Height / _tiledMap.TileHeight);
