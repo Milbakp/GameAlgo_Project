@@ -1,3 +1,4 @@
+// Handles the score UI and displaying win/lose text
 using GAlgoT2530.Engine;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
@@ -10,7 +11,6 @@ namespace PacmanGame
     {
         public enum GameState { Win, Lose, Playing };
         public GameState CurrentGameState;
-        // UI Variables
         private SpriteFont _scoreFont, _winLoseFont;
         public int winScore;
         public int loseScore;
@@ -31,8 +31,6 @@ namespace PacmanGame
             string scoreText = $"Wins: {winScore}  Losses: {loseScore}";
             Vector2 textSize = _scoreFont.MeasureString(scoreText);
 
-            // Viewport.Width / 2 is the middle of the window
-            // textSize.X / 2 is the middle of the words
             float centerX = (_game.GraphicsDevice.Viewport.Width / 2) - (textSize.X / 2);
             float centerY = 20; // Keep it near the top
             Vector2 position = new Vector2(centerX, centerY);

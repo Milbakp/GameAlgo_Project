@@ -1,10 +1,11 @@
+// Manages the trip tiles, including their states and checking if pacman is on an active trip tile.
+// Activates half of the trip tiles according to the heat map values.
 using GAlgoT2530.AI;
 using GAlgoT2530.Engine;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tiled;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using System;
 using Microsoft.Xna.Framework.Audio;
@@ -18,7 +19,6 @@ namespace PacmanGame{
         public Dictionary<Tile, bool> blockedTiles = new Dictionary<Tile, bool>(); 
         public Dictionary<Tile, bool> activeTiles = new Dictionary<Tile, bool>(); 
         private Pacman _pacman;
-        //private VargasHCFSM _vargasHCFSM;
         public bool alert;
         private Tile _alertedTile;
         private SoundEffect TripTileSound;
@@ -33,7 +33,7 @@ namespace PacmanGame{
             alert = false;
             TripTileSound = _game.Content.Load<SoundEffect>("Alarm");
         }
-
+        // Checks if pacman is on an active trip tile, if yes, sets alert to true and stores the alerted tile.
         public override void Update()
         {
             foreach(Tile tile in _tripTiles)
@@ -48,7 +48,7 @@ namespace PacmanGame{
                 }
             }
         }
-
+        // Getter for the alerted tile, used by VargasHCFSM to know travel to when in alert state.
         public Tile GetAlertedTile()
         {
             return _alertedTile;
@@ -56,6 +56,7 @@ namespace PacmanGame{
         // Work around to make sure that the game map is not null when assigned. The function is called by VargasHCFSM in its initialization.
         public void setMap()
         {
+            // Only assign the map and food layer on the first call.
             if(!(_tripTiles.Count > 0))
             {
                 _gameMap = (GameMap)GameObjectCollection.FindByName("GameMap");
@@ -65,15 +66,16 @@ namespace PacmanGame{
             TiledMapObjectLayer tiledMapObjectLayer = _gameMap.TiledMap.GetLayer<TiledMapObjectLayer>("TripTiles");
             foreach (var obj in tiledMapObjectLayer.Objects)
             {
+                // Adding the trip tiles on the first call.
                 Tile tripTile = Tile.ToTile(new Vector2(obj.Position.X, obj.Position.Y), _gameMap.TiledMap.TileWidth, _gameMap.TiledMap.TileHeight);
                 if (!_tripTiles.Contains(tripTile))
                 {
                     _tripTiles.AddLast(tripTile);
                     blockedTiles.Add(tripTile, false);
                     activeTiles.Add(tripTile, false);
-                    //_foodLayer.SetTile((ushort)tripTile.Col, (ushort)tripTile.Row, 4);
                     continue;
                 }
+                // Setting the tiles to default states.
                 _foodLayer.SetTile((ushort)tripTile.Col, (ushort)tripTile.Row, 5);
                 blockedTiles[tripTile] = false;
                 activeTiles[tripTile] = false;

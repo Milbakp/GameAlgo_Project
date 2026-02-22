@@ -1,5 +1,6 @@
 Honor Code: 
     - I did not get assistant from other people.
+    - Minimal usage of gemini for debugging.
 
 Name: Muhammad Luqman Irfan Bin Ahmad Kamal Peong
 ID: 1221102096

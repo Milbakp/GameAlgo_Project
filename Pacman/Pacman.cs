@@ -1,4 +1,5 @@
 // Based from the original Pacman.cs
+// Contains the Heatmap and the logic to update it.
 using GAlgoT2530.Engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -83,6 +84,7 @@ namespace PacmanGame
             }
             else
             {
+                // Run gaussian blur to after every game.
                 averageHeatMap();
             }
             _tripTileManager = (TripTileManager)GameObjectCollection.FindByName("TripTileManager");
@@ -273,6 +275,7 @@ namespace PacmanGame
         // This will average out the values and make it less sensitive to outliers, giving a better representation of the overall heatmap.
         public void averageHeatMap()
         {
+            // Buffer to store the new heatmap values after applying the blur, to avoid modifying the heatmap while we are still calculating it.
             Dictionary<(int x, int y), float> bufferHeatMap = new Dictionary<(int x, int y), float>();
             // Gaussian blur kernel
             float[] kernel = {

@@ -12,7 +12,6 @@ namespace PacmanGame
         private GameMap _gameMap;
         private Ghost _ghost;
         private Pacman _pacman;
-        private Tile _goalTile;
         private ScoreUI _scoreUI;
         private SoundEffect LoseSound, WinSound;
         private float _gameOverDelaySeconds;
@@ -22,21 +21,13 @@ namespace PacmanGame
         {
             // Game map
             GameMap gameMap = new GameMap("GameMap");
-            // No need to manually set home tile here anymore, edits in GameMap.cs automatically set it.
-            // gameMap.StartColumn = 0;
-            // gameMap.StartRow = 8;
             _gameMap = gameMap;
-
-            // Pathfinding Tester
-            // PathfindingTester pathfindingTester = new PathfindingTester("PathfindingTester");
 
             // Ghost
             _ghost = new Ghost();
 
             _pacman = new Pacman();
             _pacman.Speed = 100.0f;
-            // _pacman.StartRow = _gameMap.StartRow;
-            // _pacman.StartColumn = _gameMap.StartColumn;
             _pacman.NavigableTileLayerName = "Food";
 
             // Trip Tile Manager
@@ -53,7 +44,7 @@ namespace PacmanGame
         }
 
         
-        // Updating the map, replaces the power pellet tile with tthe empty tile.
+        // Updating the map, checking for win/lose conditions, and restarting the scene after a delay if the game is over.
         public override void Update()
         {
             _gameMap.Update();

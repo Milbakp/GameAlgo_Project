@@ -15,6 +15,19 @@ namespace PacmanGame
 {
     public class VargasHCFSM : HCFSM
     {
+        // Roaming - Vargas travels randomly
+
+        // HeatMap - Vargas travels to hot spots (Commonly stepped on tiles). He'll randomly pick out of the top 20 spots
+
+        // Chase - Upon spotting the player, Vargas will give chase. 
+        // In this state, Vargas can block tiles in trip spots.
+        // Vargas will block the nearest trip tile to the player.
+        // Vargas tracks the players position after seeing them. 
+        // If the player goes out of vision, Vargas tracks theirposition for a few seconds afterwards
+
+        // Alert - If the player passes a trip spot, Vargas is alerted and will travel to the trip spot location
+
+        // GameOver - If the player wins or losses, Vargas enters this state and stays idle. 
         public enum State { Roam, Chase, HeatMap, Alert, GameOver};
 
         public State CurrentState;
@@ -80,7 +93,7 @@ namespace PacmanGame
 
             TiledMapObjectLayer wayPoints = _tiledMap.GetLayer<TiledMapObjectLayer>("WayPoints");
 
-            // filling _powerPelletTilesOrder with all paths to each power pellet.
+            // Seting the ghost's initial position to be the goal position defined in the tiled map.
             foreach (var obj in wayPoints.Objects)
             {
                 if(obj.Name == "Home")
@@ -252,7 +265,7 @@ namespace PacmanGame
                     facingDirection(headTile, nextTile);
                 }
             }
-		    //facingDirection(_srcTile, _path.First.Value);
+
             // Move the ghost to the new tile location
             _ghost.Position = _ghost.Move(_ghost.Position, headTilePosition, elapsedSeconds);
             _ghost.AnimatedSprite.Update(ScalableGameTime.GameTime);
@@ -380,7 +393,7 @@ namespace PacmanGame
                 }
             
         }
-        // Calculate the nearest trip tile and block it off. Luqman
+        // Calculate the nearest trip tile and block it off.
         private Tile Calculate_NearestTripTile()
         {
             
@@ -450,14 +463,17 @@ namespace PacmanGame
             _nextTile = Tile.ToTile(_nextTilePosition, _tiledMap.TileWidth, _tiledMap.TileHeight);
             _path.Clear();
 
-            // Get top 10 warmest tiles and randomly choose one of them to visit.
+            // Get top 15-35 warmest tiles and randomly choose one of them to visit.
+            // Ignores top 15 most stepped on tiles as they are usually around the spawn area which the player is not likely to be around
             Dictionary<(int x, int y), float> topHalf = _pacman.HeatMap.OrderByDescending(x => x.Value)
+                    .Skip(15) // Ignore the top 15
                     .Take(20)
                     .ToDictionary(x => x.Key, x => x.Value);
 
             Random rng = new Random();
             (int x, int y) newTile = topHalf.ElementAt(rng.Next(topHalf.Count)).Key;
 
+            // Compute an A* path
             _srcTile = Tile.ToTile(_ghost.Position, _tiledMap.TileWidth, _tiledMap.TileHeight);
             _destTile = new Tile(newTile.x, newTile.y);
             _path = AStar.Compute(_tileGraph, _srcTile, _destTile, AStarHeuristic.EuclideanSquared);
@@ -505,7 +521,7 @@ namespace PacmanGame
         #region Alert State Methods
         private void Alert_Initialize()
         {
-            _ghost.MaxSpeed = 500.0f;
+            _ghost.MaxSpeed = 500.0f; // Very fast speed so that Vargas can immediately rush to the tile, forcing the player to consider which tiles they step on and where to hide.
 
             // Initialize the next tile position
             _nextTilePosition = _ghost.Position;
